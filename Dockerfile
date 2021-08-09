@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 RUN apt-get update -y
 
-RUN docker run --name mynginx1 -p 80:80 -d nginx
+RUN apt get install httpd -y
 
 COPY index.html /var/www/html
 
