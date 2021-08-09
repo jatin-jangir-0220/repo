@@ -2,10 +2,11 @@ FROM ubuntu:latest
 
 RUN apt-get update -y
 
-RUN apt-get install httpd -y
+RUN apt-get install nginx -y
 
 COPY index.html /var/www/html
 
 EXPOSE 80
 
-CMD ["/usr/sbin/httpd", "-DFOREGROUND"]
+
+CMD ["nginx", "-g", "daemon off;"]
