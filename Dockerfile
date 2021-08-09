@@ -2,6 +2,7 @@ FROM ubuntu:latest
 
 RUN apt-get update -y
 
+RUN apt-get install curl -y
 RUN apt-get install nginx -y
 
 COPY index.html /var/www/html
