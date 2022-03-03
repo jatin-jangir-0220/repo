@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM quay.io/devtron/test:2641fa5b-15-179
 
 RUN apt-get update -y
 
