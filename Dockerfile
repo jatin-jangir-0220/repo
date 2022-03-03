@@ -1,4 +1,4 @@
-FROM quay.io/devtron/test:2641fa5b-15-179
+FROM gcr.io/gcr-repo-repo/test:d09c6080-92-183
 
 RUN apt-get update -y
 
