@@ -1,4 +1,4 @@
-FROM gcr.io/gcr-repo-repo/test:d09c6080-92-183
+FROM ubuntu:latest
 
 RUN apt-get update -y
 
