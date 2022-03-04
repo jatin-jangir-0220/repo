@@ -1,4 +1,4 @@
-FROM quay.io/devtron/test:d75acad1-15-196
+FROM testdt123.azurecr.io/testdt123:e99057eb-97-215
 RUN apt-get update -y
 
 RUN apt-get install curl -y
