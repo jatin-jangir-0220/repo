@@ -1,4 +1,4 @@
-FROM us-central1-docker.pkg.dev/gcr-repo-repo/quickstart-docker-repo/test:7ed6fb00-94-188
+FROM gcr.io/gcr-repo-repo/test:d0b40e3d-92-185
 
 RUN apt-get update -y
 
