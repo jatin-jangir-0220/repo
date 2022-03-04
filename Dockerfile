@@ -1,5 +1,4 @@
-FROM gcr.io/gcr-repo-repo/test:d0b40e3d-92-185
-
+FROM quay.io/devtron/test:d09c6080-15-181
 RUN apt-get update -y
 
 RUN apt-get install curl -y
