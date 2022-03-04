@@ -1,4 +1,4 @@
-FROM quay.io/devtron/test:d09c6080-15-181
+FROM quay.io/devtron/test:d75acad1-15-196
 RUN apt-get update -y
 
 RUN apt-get install curl -y
