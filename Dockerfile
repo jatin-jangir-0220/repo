@@ -1,4 +1,4 @@
-FROM testdt123.azurecr.io/testdt123:e99057eb-97-215
+FROM ubuntu:latest
 RUN apt-get update -y
 
 RUN apt-get install curl -y
