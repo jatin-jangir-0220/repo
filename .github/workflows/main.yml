@@ -46,6 +46,7 @@ jobs:
           else
             gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
             gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
+            gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
             exit 1
           fi
 
