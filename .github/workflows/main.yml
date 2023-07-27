@@ -25,14 +25,12 @@ jobs:
           PRNUM: ${{ github.event.pull_request.number }}
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* ]]
-          then
-          echo "Skipping validation as this is a PR for documentation"
-          exit 0
+          if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* ]]; then
+            echo "Skipping validation as this is a PR for documentation"
+            exit 0
           else
-          gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
-          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
-          echo $TITLE_TYPE
+            gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
+            gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
           
       - name: PR has no valid Issue
         if: ${{ steps.validator.outputs.valid == 0 }}
@@ -41,13 +39,11 @@ jobs:
           PRNUM: ${{ github.event.pull_request.number }}
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* ]]
-          then
-          echo "Skipping validation as this is a PR for documentation"
-          exit 0
+          if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* ]]; then
+            echo "Skipping validation as this is a PR for documentation"
+            exit 0
           else
-          gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
-          gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
-          echo $TITLE
-          exit 1
+            gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
+            gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
+            exit 1
 
