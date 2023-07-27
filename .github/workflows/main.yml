@@ -40,7 +40,7 @@ jobs:
           PRNUM: ${{ github.event.pull_request.number }}
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* ]]; then
+          if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
             echo "Skipping validation as this is a PR for documentation"
             exit 0
           else
