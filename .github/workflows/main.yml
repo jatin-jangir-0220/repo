@@ -35,14 +35,5 @@ jobs:
         run: |
           gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
           gh pr edit $PRNUM --add-label "PR:No-Issue"
-      - name: Set PR Validation Status
-        if: always()  # This step will always run to set the PR validation status
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRNUM: ${{ github.event.pull_request.number }}
-        run: |
-          if [[ ${{ steps.validator.outputs.valid }} == 0 ]]; then
-            gh pr status $PRNUM --state error --description "PR is not linked to any issue."  # Set the status check as failed
-          else
-            gh pr status $PRNUM --state success --description "PR has a valid linked issue."  # Set the status check as successful
-          fi
+          exit 1
+
