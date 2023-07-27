@@ -1,4 +1,4 @@
-name: PR has a valid Issue?
+name: PR linked with a valid issue
 
 on:
   pull_request_target:
