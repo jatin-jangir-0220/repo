@@ -23,17 +23,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PRNUM: ${{ github.event.pull_request.number }}
+          TITLE: ${{ github.event.pull_request.title }}
+          TITLE_TYPE: $(closed_pr_lower=$(echo "$closed_pr" | sed -e 's/\(.*\)/\L\1/'))
         run: |
           gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
-          gh pr edit $PRNUM --remove-label "PR:No-Issue"
+          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+          echo $TITLE_TYPE
           
       - name: PR has no valid Issue
         if: ${{ steps.validator.outputs.valid == 0 }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PRNUM: ${{ github.event.pull_request.number }}
+          TITLE: ${{ github.event.pull_request.title }}
+          TITLE_TYPE: $(closed_pr_lower=$(echo "$closed_pr" | sed -e 's/\(.*\)/\L\1/'))
         run: |
           gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
-          gh pr edit $PRNUM --add-label "PR:No-Issue"
+          gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
+          echo $TITLE_TYPE
           exit 1
 
