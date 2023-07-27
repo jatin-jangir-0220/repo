@@ -25,7 +25,7 @@ jobs:
           PRNUM: ${{ github.event.pull_request.number }}
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          TITLE_TYPE=$(echo "$TITLE" | sed 's/:.*//')
+          TITLE_TYPE=$(echo "$TITLE" | sed -e 's/\(.*\)/\L\1/')
           gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
           gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
           echo $TITLE_TYPE
