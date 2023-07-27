@@ -27,6 +27,7 @@ jobs:
         run: |
           if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* ]]
           then
+          echo "Skipping validation as this is a PR for documentation"
           exit 0
           else
           gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
@@ -40,6 +41,11 @@ jobs:
           PRNUM: ${{ github.event.pull_request.number }}
           TITLE: ${{ github.event.pull_request.title }}
         run: |
+          if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* ]]
+          then
+          echo "Skipping validation as this is a PR for documentation"
+          exit 0
+          else
           gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
           gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
           echo $TITLE
