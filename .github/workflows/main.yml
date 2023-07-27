@@ -42,7 +42,7 @@ jobs:
           PRNUM: ${{ github.event.pull_request.number }}
         run: |
           if [[ ${{ steps.validator.outputs.valid }} == 0 ]]; then
-            gh pr status $PRNUM -s error -d "PR is not linked to any issue."  # Set the status check as failed
+            gh pr status $PRNUM --state error --description "PR is not linked to any issue."  # Set the status check as failed
           else
-            gh pr status $PRNUM -s success -d "PR has a valid linked issue."  # Set the status check as successful
+            gh pr status $PRNUM --state success --description "PR has a valid linked issue."  # Set the status check as successful
           fi
