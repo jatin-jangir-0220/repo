@@ -18,9 +18,9 @@ jobs:
       run: |
           if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
           echo "Skipping validation as this is a PR for documentation"
-          return 0
+          exit 0
           else
-          return 1
+          exit 1
           fi
 
     - name: Issue Validator
