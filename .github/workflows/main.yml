@@ -21,8 +21,6 @@ jobs:
           if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
           echo "Skipping validation as this is a PR for documentation"
           exit 0
-          else
-          exit 1
           fi
           gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
 
@@ -34,7 +32,7 @@ jobs:
         prurl: ${{ github.event.pull_request.url }}
 
     - name: PR has a valid Issue
-      if: ${{ steps.isdoc.outputs.valid == 1 && steps.validator.outputs.valid == 1 }}
+      if: ${{ steps.isdoc.outputs.valid != 0 && steps.validator.outputs.valid == 1 }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PRNUM: ${{ github.event.pull_request.number }}
@@ -44,7 +42,7 @@ jobs:
           exit 0
 
     - name: PR has no valid Issue
-      if: ${{ steps.isdoc.outputs.valid == 1 && steps.validator.outputs.valid == 0 }}
+      if: ${{ steps.isdoc.outputs.valid != 0 && steps.validator.outputs.valid == 0 }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PRNUM: ${{ github.event.pull_request.number }}
