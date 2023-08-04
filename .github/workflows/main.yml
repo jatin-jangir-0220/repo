@@ -32,6 +32,7 @@ jobs:
             else
             gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
             gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+            fi
 
       - name: PR has no valid Issue
         if: ${{ steps.validator.outputs.valid == 0 }}
@@ -49,4 +50,5 @@ jobs:
             gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
             gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
             exit 1
+            fi
 
