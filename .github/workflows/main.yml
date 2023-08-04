@@ -27,7 +27,7 @@ jobs:
         run: |
           if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
             echo "Skipping validation as this is a PR for documentation"
-            gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
+            gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
             exit 0
           else
             gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
@@ -43,7 +43,7 @@ jobs:
         run: |
           if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
             echo "Skipping validation as this is a PR for documentation"
-            gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
+            gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
             exit 0
           else
             gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
