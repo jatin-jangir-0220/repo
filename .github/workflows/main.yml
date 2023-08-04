@@ -31,6 +31,7 @@ jobs:
           else
             gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
             gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+            gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
           fi
 
       - name: PR has no valid Issue
