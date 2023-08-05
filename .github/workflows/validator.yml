@@ -29,7 +29,7 @@ jobs:
 
         # Check if the pull request is for documentation. If yes, skip it.
         if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
-          echo "Skipping validation as this is a PR for documentation"
+          echo "Skipping validation as this is a PR for documentation or chore."
           gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
           gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
           exit 0
