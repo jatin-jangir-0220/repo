@@ -34,6 +34,8 @@ jobs:
           exit 0
         elif echo "$PR_BODY" | grep -Ei 'fixes #[0-9]+|resolves #[0-9]+'; then
           echo "Issue reference found in the pull request body."
+          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+          gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
         else
           echo "No valid issue reference found in the pull request body."
           gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
