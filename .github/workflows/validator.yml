@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Issue Validator
-        uses: HarshCasper/validate-issues-over-pull-requests@main
+        uses: HarshCasper/validate-issues-over-pull-requests@v0.1.1
         id: validator
         with:
           prbody: ${{ github.event.pull_request.body }}
