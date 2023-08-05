@@ -1,43 +1,30 @@
-name: PR linked with a valid issue ?
+name: Validate Pull Request
 
 on:
-  pull_request_target:
-    types: [ edited, synchronize, opened, reopened ]
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
-  validator:
+  validate:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v3.5.3
-
-      - name: Issue Validator
-        uses: HarshCasper/validate-issues-over-pull-requests@main
-        id: validator
-        with:
-          prbody: ${{ github.event.pull_request.body }}
-          prurl: ${{ github.event.pull_request.url }}
-
-      - name: PR has a valid Issue
-        if: ${{ steps.validator.outputs.valid == 1 }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRNUM: ${{ github.event.pull_request.number }}
-          TITLE: ${{ github.event.pull_request.title }}
-        run: |
-              gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
-              gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
-
-            
-      - name: PR has no valid Issue
-        if: ${{ steps.validator.outputs.valid == 0 }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRNUM: ${{ github.event.pull_request.number }}
-          TITLE: ${{ github.event.pull_request.title }}
-        run: |
-              gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
-              gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
-              gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
-              exit 1
-
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Validate Issue Reference
+      run: |
+        set -e
+        
+        # Get the pull request body
+        PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
+        
+        # Check if the pull request body contains "Fixes" or "Resolves" keywords
+        if echo "$PR_BODY" | grep -Ei 'fixes #[0-9]+|resolves #[0-9]+'; then
+          echo "Issue reference found in the pull request body."
+        else
+          echo "No valid issue reference found in the pull request body."
+          exit 1
+        fi
