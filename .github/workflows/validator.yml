@@ -28,7 +28,11 @@ jobs:
         PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
         
         # Check if the pull request body contains "Fixes" or "Resolves" keywords
-        if echo "$PR_BODY" | grep -Ei 'fixes #[0-9]+|resolves #[0-9]+'; then
+        if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
+          echo "Skipping validation as this is a PR for documentation"
+          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+          exit 0
+        elif echo "$PR_BODY" | grep -Ei 'fixes #[0-9]+|resolves #[0-9]+'; then
           echo "Issue reference found in the pull request body."
         else
           echo "No valid issue reference found in the pull request body."
