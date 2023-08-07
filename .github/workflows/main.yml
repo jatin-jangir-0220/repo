@@ -18,6 +18,8 @@ jobs:
 
     - name: Validate Issue Reference
       env:
+        PR_BODY: ${{ github.event.pull_request.body }}
+        PR_URL: ${{ github.event.pull_request.url }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PRNUM: ${{ github.event.pull_request.number }}
         TITLE: ${{ github.event.pull_request.title }}
@@ -32,6 +34,10 @@ jobs:
             issue_num="No issue number"
         fi
         echo "$issue_num"
+        echo "$PR_URL"
+
+
+
 
         
         # Check if the pull request is for documentation. If yes, skip it.
