@@ -59,7 +59,7 @@ jobs:
         if [[ "$response_code" -eq 200 ]]; then
           # Check if issue is open or closed
           text=$(curl -s "$url")
-          if [[ $(echo "$text" | jq -r '.state') == "open" ]];; then
+          if [[ $(echo "$text" | jq -r '.state') == "open" ]]; then
             echo "Issue #$issue_num is open"
             else
             echo "Issue #$issue_num is not open"
