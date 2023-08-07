@@ -19,7 +19,7 @@ jobs:
     - name: Validate Issue Reference
       env:
         PR_BODY: ${{ github.event.pull_request.body }}
-        PR_URL: ${{ github.event.pull_request.url }}
+        url: ${{ github.event.pull_request.url }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PRNUM: ${{ github.event.pull_request.number }}
         TITLE: ${{ github.event.pull_request.title }}
@@ -34,13 +34,21 @@ jobs:
             issue_num="No issue number"
         fi
         echo "$issue_num"
-        echo "$PR_URL"
-
-
-        url=$(echo "$url" | sed 's/\/pull\/[0-9]\+//')
+        
+        IFS="/" read -r -a url_parts <<< "$url"
+        
+        # Remove the last two elements (repos and the issue number)
+        unset url_parts[-1]
+        unset url_parts[-1]
         
         # Replace "api." with an empty string in the third element (index 2)
-        url=$(echo "$PR_URL" | sed 's/api.//')
+        url_parts[2]=${url_parts[2]//api./}
+        
+        # Reattach the URL pieces
+        url=$(IFS=/; echo "${url_parts[*]}")
+        
+        # Extract the issue number from the URL
+        issue_num=$(echo "$url" | grep -o -P "pull/\K\d+")
         
         # Add the issue number to the URL
         url="${url}/issues/${issue_num}"
