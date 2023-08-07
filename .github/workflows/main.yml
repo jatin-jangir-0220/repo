@@ -69,6 +69,7 @@ jobs:
           
           echo "Valid flag is: $valid_code"
          GITHUB_OUTPUT="valid=$valid_code"
+         echo "$GITHUB_OUTPUT"
         }
         
         # Get the pull request body
