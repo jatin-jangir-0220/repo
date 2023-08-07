@@ -22,81 +22,28 @@ jobs:
         PRNUM: ${{ github.event.pull_request.number }}
         TITLE: ${{ github.event.pull_request.title }}
       run: |
-        validator(){
-
-          # Define the pattern to match
-          pattern="((Fixes|Resolves) #[0-9]+)"
-          
-          # Get the PR body and the PR URL
-          body=$INPUT_PRBODY
-          url=$INPUT_PRURL
-          echo "$body"
-          echo "$url"
-          
-          # Get the Issue number
-          issue_num=$(echo "$body" | grep -o -P "$pattern" | head -n1 | grep -o -E "[0-9]+")
-          if [[ -z "$issue_num" ]]; then
-              issue_num="No issue number"
-          fi
-          echo "$issue_num"
-          
-          # Modify the URL
-          url_parts=(${url//\// })
-          url_parts[2]=${url_parts[2]/api./}
-          unset url_parts[3]
-          modified_url=$(IFS=/; echo "${url_parts[*]}")
-          
-          # Add the issue number to the URL
-          modified_url="${modified_url}/issues/${issue_num}"
-          echo "$modified_url"
-          
-          # Check if it's valid code
-          valid_code=0
-          response_code=$(curl -s -o /dev/null -w "%{http_code}" "$modified_url")
-          if [[ "$response_code" -eq 200 ]]; then
-              if [[ "$(curl -s -o /dev/null -w "%{url_effective}" "$modified_url")" == "$modified_url" ]]; then
-                  # Check if issue is open or closed
-                  text=$(curl -s "$modified_url")
-                  if [[ "$text" =~ Status:\s(\w+) ]]; then
-                      if [[ "${BASH_REMATCH[1]}" == "Open" ]]; then
-                          valid_code=1
-                      else
-                          echo "Issue is closed"
-                      fi
-                  fi
-              fi
-          else
-              echo "Invalid Response Code obtained - error code: $response_code"
-          fi
-          
-          echo "Valid flag is: $valid_code"
-          echo "valid=$valid_code >> $GITHUB_OUTPUT"
-
-        }
-
-        validator
+        set -e
         
         # Get the pull request body
         PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
-        # Check if the pull request is for documentation. If yes, skip it.
-        if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
-          echo "Skipping validation as this is a PR for documentation or chore."
-          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
-          gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
-          exit 0
-          
-        # Check if the pull request body contains "Fixes" or "Resolves" keywords
-        elif [ "$GITHUB_OUTPUT" -eq 1 ]; then
-          echo "Issue reference found in the pull request body."
-          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
-          gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
-          exit 0
-          
-        # If the pull request body doesn't contain "Fixes" or "Resolves" keywords
+        
+        # Find issue references using regex pattern
+        ISSUE_REFERENCES=$(echo "$PR_BODY" | grep -Eo 'fixes #[0-9]+|resolves #[0-9]+')
+        
+        # Extract issue numbers from references
+        ISSUE_NUMBERS=$(echo "$ISSUE_REFERENCES" | grep -Eo '[0-9]+')
+        
+        if [ -n "$ISSUE_NUMBERS" ]; then
+          for issue_number in $ISSUE_NUMBERS; do
+            # Check if the issue actually exists
+            if curl -s -o /dev/null -w "%{http_code}" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$issue_number" -H "Authorization: Bearer $GITHUB_TOKEN" | grep -q "200"; then
+              echo "Valid issue reference: #$issue_number"
+            else
+              echo "Invalid issue reference: #$issue_number"
+              exit 1
+            fi
+          done
         else
           echo "No valid issue reference found in the pull request body."
-          gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
-          gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
-          gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
           exit 1
         fi
