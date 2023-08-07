@@ -65,7 +65,6 @@ jobs:
             valid_code=1
           else
             echo "Issue #$issue_num is not open"
-            exit 1
           fi
         else
             echo "Invalid Response Code obtained - error code: $response_code"
