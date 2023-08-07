@@ -40,10 +40,10 @@ jobs:
         # Remove the last two elements (repos and the issue number)
         unset url_parts[-1]
         unset url_parts[-1]
-        unset url_parts[3]
+        #unset url_parts[3]
         
         # Replace "api." with an empty string in the third element (index 2)
-        url_parts[2]=${url_parts[2]//api./}
+        #url_parts[2]=${url_parts[2]//api./}
         
         
         # Reattach the URL pieces
