@@ -53,6 +53,26 @@ jobs:
         # Add the issue number to the URL
         url="${url}/issues/${issue_num}"
         echo "$url"
+
+        valid_code=0
+        response_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+        if [[ "$response_code" -eq 200 ]]; then
+            if [[ "$(curl -s -o /dev/null -w "%{url_effective}" "$url")" == "$url" ]]; then
+                # Check if issue is open or closed
+                text=$(curl -s "$url")
+                if [[ "$text" =~ Status:\s(\w+) ]]; then
+                    if [[ "${BASH_REMATCH[1]}" == "Open" ]]; then
+                        valid_code=1
+                    else
+                        echo "Issue is closed"
+                    fi
+                fi
+            fi
+        else
+            echo "Invalid Response Code obtained - error code: $response_code"
+        fi
+
+        echo "Valid flag is: $valid_code"
         
         # Check if the pull request is for documentation. If yes, skip it.
         if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
