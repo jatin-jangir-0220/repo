@@ -83,7 +83,7 @@ jobs:
           exit 0
           
         # Check if the pull request body contains "Fixes" or "Resolves" keywords
-        elif [[ $(echo "$valid_code") == 1 ]]; then
+        elif echo "$valid_code" == 1; then
           echo "Issue reference found in the pull request body."
           gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
           gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
