@@ -38,38 +38,7 @@ jobs:
           fi
           echo "$issue_num"
           
-          # Modify the URL
-          url_parts=(${url//\// })
-          url_parts[2]=${url_parts[2]/api./}
-          unset url_parts[3]
-          modified_url=$(IFS=/; echo "${url_parts[*]}")
-          
-          # Add the issue number to the URL
-          modified_url="${modified_url}/issues/${issue_num}"
-          echo "$modified_url"
-          
-          # Check if it's valid code
-          valid_code=0
-          response_code=$(curl -s -o /dev/null -w "%{http_code}" "$modified_url")
-          if [[ "$response_code" -eq 200 ]]; then
-              if [[ "$(curl -s -o /dev/null -w "%{url_effective}" "$modified_url")" == "$modified_url" ]]; then
-                  # Check if issue is open or closed
-                  text=$(curl -s "$modified_url")
-                  if [[ "$text" =~ Status:\s(\w+) ]]; then
-                      if [[ "${BASH_REMATCH[1]}" == "Open" ]]; then
-                          valid_code=1
-                      else
-                          echo "Issue is closed"
-                      fi
-                  fi
-              fi
-          else
-              echo "Invalid Response Code obtained - error code: $response_code"
-          fi
-          
-          echo "Valid flag is: $valid_code"
-         GITHUB_OUTPUT="valid=$valid_code"
-         echo "$GITHUB_OUTPUT"
+
         }
         
         # Get the pull request body
