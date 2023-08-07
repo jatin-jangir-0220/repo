@@ -39,7 +39,7 @@ jobs:
         
         # Remove the last two elements (repos and the issue number)
         unset url_parts[-1]
-        unset url_parts[-1]
+        unset url_parts[3]
         
         # Replace "api." with an empty string in the third element (index 2)
         url_parts[2]=${url_parts[2]//api./}
@@ -48,9 +48,6 @@ jobs:
         # Reattach the URL pieces
         url=$(IFS=/; echo "${url_parts[*]}")
 
-        for ((i = 3; i < ${#url_parts[@]} - 1; i++)); do
-          url_parts[i]="${url_parts[i+1]}"
-        done
         
         # Add the issue number to the URL
         url="${url}/issues/${issue_num}"
