@@ -63,6 +63,7 @@ jobs:
           echo "checking status of the issue"
           if [[ $(echo "$text" | jq -r '.state') == "open" ]]; then
             echo "Issue #$issue_num is open"
+            valid_code=1
           else
             echo "Issue #$issue_num is not open"
             exit 1
