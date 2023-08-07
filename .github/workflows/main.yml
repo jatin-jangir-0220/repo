@@ -59,7 +59,7 @@ jobs:
         if [[ "$response_code" -eq 200 ]]; then
           # Check if issue is open or closed
           text=$(curl -s "$url")
-          echo "$text"
+          #echo "$text"
           echo "checking status of the issue"
           if [[ $(echo "$text" | jq -r '.state') == "open" ]]; then
             echo "Issue #$issue_num is open"
@@ -83,7 +83,7 @@ jobs:
           exit 0
           
         # Check if the pull request body contains "Fixes" or "Resolves" keywords
-        elif echo "$PR_BODY" | grep -Ei 'fixes #[0-9]+|resolves #[0-9]+'; then
+        elif [[ $(echo "$valid_code" == 1 ]]; then
           echo "Issue reference found in the pull request body."
           gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
           gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
