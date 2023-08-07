@@ -59,12 +59,12 @@ jobs:
         if [[ "$response_code" -eq 200 ]]; then
           # Check if issue is open or closed
           text=$(curl -s "$url")
-          if [[ $(echo "$text" | jq -r '.state') == "open" ]]; then
-            echo "Issue #$issue_num is open"
-            else
-            echo "Issue #$issue_num is not open"
-            exit 1
-            fi
+          if [[ "$text" =~ Status:\s(\w+) ]]; then
+              if [[ "${BASH_REMATCH[1]}" == "Open" ]]; then
+                  valid_code=1
+              else
+                  echo "Issue is closed"
+              fi
           fi
         else
             echo "Invalid Response Code obtained - error code: $response_code"
