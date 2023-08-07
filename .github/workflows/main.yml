@@ -55,6 +55,7 @@ jobs:
         echo "$url"
 
         valid_code=0
+        response_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
         if [[ "$response_code" -eq 200 ]]; then
             if [[ "$(curl -s -o /dev/null -w "%{url_effective}" "$url")" == "$url" ]]; then
                 # Check if issue is open or closed
