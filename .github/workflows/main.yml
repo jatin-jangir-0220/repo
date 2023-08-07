@@ -1,49 +1,37 @@
-name: Validate Pull Request
+name: PR has a valid Issue?
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - edited
-      - reopened
+  pull_request_target:
+    types: [ edited, synchronize, opened, reopened ]
 
 jobs:
-  validate-PR-issue:
+  checker:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Validate Issue Reference
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PRNUM: ${{ github.event.pull_request.number }}
-        TITLE: ${{ github.event.pull_request.title }}
-      run: |
-        set -e
-        
-        # Get the pull request body
-        PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
-        
-        # Find issue references using regex pattern
-        ISSUE_REFERENCES=$(echo "$PR_BODY" | grep -Eo 'fixes #[0-9]+|resolves #[0-9]+')
-        
-        # Extract issue numbers from references
-        ISSUE_NUMBERS=$(echo "$ISSUE_REFERENCES" | grep -Eo '[0-9]+')
-        
-        if [ -n "$ISSUE_NUMBERS" ]; then
-          for issue_number in $ISSUE_NUMBERS; do
-            # Check if the issue actually exists
-            if curl -s -o /dev/null -w "%{http_code}" "https://api.github.com/repos/Shubham9t9/repo/issues/$issue_number" -H "Authorization: Bearer $GITHUB_TOKEN" | grep -q "200"; then
-              echo "Valid issue reference: #$issue_number"
-            else
-              echo "Invalid issue reference: #$issue_number"
-              exit 1
-            fi
-          done
-        else
-          echo "No valid issue reference found in the pull request body."
-          exit 1
-        fi
+      - uses: actions/checkout@v2
+      
+      - name: Issue Validator
+        uses: HarshCasper/validate-issues-over-pull-requests@main
+        id: validator
+        with:
+          prbody: ${{ github.event.pull_request.body }}
+          prurl: ${{ github.event.pull_request.url }}
+          
+      - name: PR has a valid Issue
+        if: ${{ steps.validator.outputs.valid == 1 }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRNUM: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
+          gh pr edit $PRNUM --remove-label "PR:No-Issue"
+          
+      - name: PR has no valid Issue
+        if: ${{ steps.validator.outputs.valid == 0 }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRNUM: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
+          gh pr edit $PRNUM --add-label "PR:No-Issue"
