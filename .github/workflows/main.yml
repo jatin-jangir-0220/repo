@@ -47,16 +47,9 @@ jobs:
         # Reattach the URL pieces
         url=$(IFS=/; echo "${url_parts[*]}")
         
-        # Extract the issue number from the URL
-        issue_num=$(echo "$url" | grep -o -P "pull/\K\d+")
-        
         # Add the issue number to the URL
         url="${url}/issues/${issue_num}"
         echo "$url"
-
-
-
-
         
         # Check if the pull request is for documentation. If yes, skip it.
         if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
