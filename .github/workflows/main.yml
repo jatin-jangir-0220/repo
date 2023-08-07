@@ -37,6 +37,16 @@ jobs:
         echo "$PR_URL"
 
 
+        url_parts=(${PR_URL//\// })
+        url_parts[2]=${url_parts[2]/api./}
+        unset url_parts[3]
+        modified_url=$(IFS=/; echo "${url_parts[*]}")
+        
+        # Add the issue number to the URL
+        modified_url="${modified_url}/issues/${issue_num}"
+        echo "$modified_url"
+
+
 
 
         
