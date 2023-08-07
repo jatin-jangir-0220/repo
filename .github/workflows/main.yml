@@ -23,9 +23,17 @@ jobs:
         TITLE: ${{ github.event.pull_request.title }}
       run: |
         set -e
-        
+        pattern="((Fixes|Resolves) #[0-9]+)"
         # Get the pull request body
         PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
+
+        issue_num=$(echo "$PR_BODY" | grep -o -P "$pattern" | head -n1 | grep -o -E "[0-9]+")
+        if [[ -z "$issue_num" ]]; then
+            issue_num="No issue number"
+        fi
+        echo "$issue_num"
+
+        
         # Check if the pull request is for documentation. If yes, skip it.
         if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
           echo "Skipping validation as this is a PR for documentation or chore."
