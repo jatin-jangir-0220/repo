@@ -37,14 +37,14 @@ jobs:
         echo "$PR_URL"
 
 
-        url_parts=(${PR_URL//\// })
-        url_parts[2]=${url_parts[2]/api./}
-        unset url_parts[3]
-        modified_url=$(IFS=/; echo "${url_parts[*]}")
+        url=$(echo "$url" | sed 's/\/pull\/[0-9]\+//')
+        
+        # Replace "api." with an empty string in the third element (index 2)
+        url=$(echo "$PR_URL" | sed 's/api.//')
         
         # Add the issue number to the URL
-        modified_url="${modified_url}/issues/${issue_num}"
-        echo "$modified_url"
+        url="${url}/issues/${issue_num}"
+        echo "$url"
 
 
 
