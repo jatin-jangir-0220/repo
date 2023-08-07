@@ -24,7 +24,6 @@ jobs:
         PRNUM: ${{ github.event.pull_request.number }}
         TITLE: ${{ github.event.pull_request.title }}
       run: |
-        set -e
         pattern="((Fixes|Resolves) #[0-9]+)"
         # Get the pull request body
         PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
