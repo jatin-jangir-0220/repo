@@ -55,43 +55,57 @@ jobs:
 
         valid_code=0
         response_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
-        if [[ "$response_code" -eq 200 ]]; then
+        if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
+          echo "Skipping validation as this is a PR for documentation or chore."
+          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+          gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
+          exit 0
+        elif [[ "$response_code" -eq 200 ]]; then
           # Check if issue is open or closed
           text=$(curl -s "$url")
           echo "$text"
           echo "checking status of the issue"
           if [[ $(echo "$text" | jq -r '.state') == "open" ]]; then
             echo "Issue #$issue_num is open"
-            valid_code=1
+            echo "Issue reference found in the pull request body."
+            gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+            gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
+            exit 0
           else
             echo "Issue #$issue_num is not open"
+            exit 1
           fi
         else
             echo "Invalid Response Code obtained - error code: $response_code"
+            echo "No valid issue reference found in the pull request body."
+            gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
+            gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
+            gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
+            exit 1
         fi
         
-        echo "Valid flag is: $valid_code"
-        echo "Valid flag is: $response_code"
+        # echo "Valid flag is: $valid_code"
+        # echo "Valid flag is: $response_code"
         
-        # Check if the pull request is for documentation. If yes, skip it.
-        if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
-          echo "Skipping validation as this is a PR for documentation or chore."
-          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
-          gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
-          exit 0
+        # # Check if the pull request is for documentation. If yes, skip it.
+        # if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
+        #   echo "Skipping validation as this is a PR for documentation or chore."
+        #   gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+        #   gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
+        #   exit 0
           
-        # Check if the pull request body contains "Fixes" or "Resolves" keywords
-        elif [ "$valid_code" -eq 1 ]; then
-          echo "Issue reference found in the pull request body."
-          gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
-          gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
-          exit 0
+        # # Check if the pull request body contains "Fixes" or "Resolves" keywords
+        # elif [ "$valid_code" -eq 1 ]; then
+        #   echo "Issue reference found in the pull request body."
+        #   gh pr edit $PRNUM --remove-label "PR: Issue-verification-failed"
+        #   gh pr edit $PRNUM --add-label "PR:Ready-to-Review"
+        #   exit 0
           
-        # If the pull request body doesn't contain "Fixes" or "Resolves" keywords
-        else
-          echo "No valid issue reference found in the pull request body."
-          gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
-          gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
-          gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
-          exit 1
-        fi
+        # # If the pull request body doesn't contain "Fixes" or "Resolves" keywords
+        # else
+        #   echo "No valid issue reference found in the pull request body."
+        #   gh pr comment $PRNUM --body "PR is not linked to any issue, please make the corresponding changes in the body."
+        #   gh pr edit $PRNUM --add-label "PR: Issue-verification-failed"
+        #   gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
+        #   exit 1
+        # fi
