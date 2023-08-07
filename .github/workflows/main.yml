@@ -61,6 +61,7 @@ jobs:
           text=$(curl -s "$url")
           echo "checking status of the issue"
           if [[ "$text" =~ Status:\s(\w+) ]]; then
+              echo "checking if status is open?"
               if [[ "${BASH_REMATCH[1]}" == "Open" ]]; then
                   valid_code=1
               else
