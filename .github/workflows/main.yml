@@ -2,24 +2,25 @@ name: PR has a valid Issue?
 
 on:
   pull_request_target:
-    types: [ edited, synchronize, opened, reopened ]
+    types: [edited, synchronize, opened, reopened]
 
 jobs:
   checker:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
       
       - name: Issue Validator
-        uses: HarshCasper/validate-issues-over-pull-requests@main
         id: validator
+        uses: HarshCasper/validate-issues-over-pull-requests@main
         with:
           prbody: ${{ github.event.pull_request.body }}
           prurl: ${{ github.event.pull_request.url }}
           
       - name: PR has a valid Issue
-        if: ${{ steps.validator.outputs.valid == 1 }}
+        if: ${{ steps.validator.outputs.valid == '1' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PRNUM: ${{ github.event.pull_request.number }}
@@ -28,7 +29,7 @@ jobs:
           gh pr edit $PRNUM --remove-label "PR:No-Issue"
           
       - name: PR has no valid Issue
-        if: ${{ steps.validator.outputs.valid == 0 }}
+        if: ${{ steps.validator.outputs.valid == '0' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PRNUM: ${{ github.event.pull_request.number }}
