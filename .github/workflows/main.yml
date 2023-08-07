@@ -24,6 +24,7 @@ jobs:
         PRNUM: ${{ github.event.pull_request.number }}
         TITLE: ${{ github.event.pull_request.title }}
       run: |
+        set -e
         pattern="((Fixes|Resolves) #[0-9]+)"
         # Get the pull request body
         PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
@@ -53,7 +54,7 @@ jobs:
         url="${url}/issues/${issue_num}"
         echo "$url"
 
-        valid_code=0
+        #valid_code=0
         response_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
         if [[ "$TITLE" == *"doc:"* || "$TITLE" == *"docs:"* || "$TITLE" == *"chore:"* ]]; then
           echo "Skipping validation as this is a PR for documentation or chore."
