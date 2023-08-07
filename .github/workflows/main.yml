@@ -36,7 +36,7 @@ jobs:
         if [ -n "$ISSUE_NUMBERS" ]; then
           for issue_number in $ISSUE_NUMBERS; do
             # Check if the issue actually exists
-            if curl -s -o /dev/null -w "%{http_code}" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$issue_number" -H "Authorization: Bearer $GITHUB_TOKEN" | grep -q "200"; then
+            if curl -s -o /dev/null -w "%{http_code}" "https://api.github.com/repos/Shubham9t9/repo/issues/$issue_number" -H "Authorization: Bearer $GITHUB_TOKEN" | grep -q "200"; then
               echo "Valid issue reference: #$issue_number"
             else
               echo "Invalid issue reference: #$issue_number"
