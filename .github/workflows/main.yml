@@ -43,6 +43,8 @@ jobs:
         
         # Replace "api." with an empty string in the third element (index 2)
         url_parts[2]=${url_parts[2]//api./}
+        url_parts[3]=${url_parts[3]//api./}
+        
         
         # Reattach the URL pieces
         url=$(IFS=/; echo "${url_parts[*]}")
