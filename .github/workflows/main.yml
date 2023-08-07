@@ -39,6 +39,7 @@ jobs:
         
         # Remove the last two elements (repos and the issue number)
         unset url_parts[-1]
+        unset url_parts[-1]
         unset url_parts[3]
         
         # Replace "api." with an empty string in the third element (index 2)
