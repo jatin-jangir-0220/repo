@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - name: Check Issue Label and Status
+      env:
+        GH_TOKEN: ${{ github.token }}
       id: check_label_status
       run: |
         repository="Shubham9t9/repo"
