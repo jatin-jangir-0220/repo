@@ -25,14 +25,14 @@ jobs:
         status=$(echo "$issue_data" | jq -r '.state')
 
         # Check if the "pagerDuty" label is present and the status is not closed
-        if [[ "$labels" =~ "pager-duty" ]] && [[ "$status" != "closed" ]]; then
-          echo "::set-output name=label_present::true"
+        if [[ "$labels" =~ "pagerDuty" ]] && [[ "$status" != "closed" ]]; then
+          echo "LABEL_PRESENT=true" >> $GITHUB_ENV
         else
-          echo "::set-output name=label_present::false"
+          echo "LABEL_PRESENT=false" >> $GITHUB_ENV
         fi
 
     - name: Check if Issue Was Opened More Than 2 Minutes Ago
-      if: steps.check_label_status.outputs.label_present == 'true'
+      if: env.LABEL_PRESENT == 'true'
       run: |
         # Use GitHub API to get the issue's created timestamp
         created_at=$(echo "$issue_data" | jq -r '.created_at')
