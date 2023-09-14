@@ -20,7 +20,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       id: check_label_status
       run: |
-        repository="Shubham9t9/repo"
+        repository="https://github.com/Shubham9t9/repo.git"
         username="Shubham9t9"
         
         # Fetch and assign issues
