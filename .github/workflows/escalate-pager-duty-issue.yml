@@ -1,4 +1,4 @@
-dname: Escalate GitHub Issue
+name: Escalate GitHub Issue
 
 on:
   issues:
