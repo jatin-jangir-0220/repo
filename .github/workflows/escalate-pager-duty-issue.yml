@@ -52,7 +52,7 @@ jobs:
           curl -X POST \
             -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"assignees\": [\"$shubham_username\"]}" \
+            -d "{\"assignees\": [\"$username\"]}" \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/assignees"
         else
           echo "Issue is not older than 2 minutes or it's already closed. No escalation needed."
