@@ -1,0 +1,56 @@
+name: Escalate GitHub Issue
+
+on:
+  issues:
+    types:
+      - labeled
+      - opened
+      - synchronize
+
+jobs:
+  escalate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check Issue Label and Status
+      id: check_label_status
+      run: |
+        # Use the GitHub API to fetch issue labels and status (you'll need a GitHub token with appropriate permissions)
+        issue_data=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }})
+
+        # Extract label and status
+        labels=$(echo "$issue_data" | jq -r '.labels[].name')
+        status=$(echo "$issue_data" | jq -r '.state')
+
+        # Check if the "pagerDuty" label is present and the status is not closed
+        if [[ "$labels" =~ "pager-duty" ]] && [[ "$status" != "closed" ]]; then
+          echo "::set-output name=label_present::true"
+        else
+          echo "::set-output name=label_present::false"
+        fi
+
+    - name: Check if Issue Was Opened More Than 2 Minutes Ago
+      if: steps.check_label_status.outputs.label_present == 'true'
+      run: |
+        # Use GitHub API to get the issue's created timestamp
+        created_at=$(echo "$issue_data" | jq -r '.created_at')
+
+        # Calculate the current date and 2 minutes ago
+        current_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+        two_minutes_ago=$(date -u -d '2 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
+
+        # Check if the issue was created more than 2 minutes ago
+        if [[ "$created_at" < "$two_minutes_ago" ]]; then
+          # Use GitHub API to assign the issue to Shubham
+          shubham_username="Shubham"
+
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "{\"assignees\": [\"$shubham_username\"]}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/assignees"
+        else
+          echo "Issue is not older than 2 minutes or it's already closed. No escalation needed."
+        fi
