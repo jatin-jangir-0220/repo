@@ -47,7 +47,7 @@ jobs:
         # Check if the issue was created more than 2 minutes ago
         if [[ "$created_at" < "$two_minutes_ago" ]]; then
           # Use GitHub API to assign the issue to Shubham
-          shubham_username="Shubham"
+          username="Shubham9t9"
 
           curl -X POST \
             -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
