@@ -16,7 +16,7 @@ jobs:
       id: check_label_status
       run: |
         # Use the GitHub API to fetch issue labels and status (you'll need a GitHub token with appropriate permissions)
-        issue_data=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+        issue_data=$(curl -s -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }})
 
@@ -47,7 +47,7 @@ jobs:
           shubham_username="Shubham"
 
           curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d "{\"assignees\": [\"$shubham_username\"]}" \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/assignees"
