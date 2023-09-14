@@ -23,7 +23,7 @@ jobs:
         repository="https://github.com/Shubham9t9/repo.git"
         username="Shubham9t9"
 
-        issue_data=$(gh issue list --repo Shubham9t9/repo --json)
+        issue_data=$(gh issue list --repo Shubham9t9/repo --json labels,number)
         echo "$issue_data"
         # # Fetch and assign issues
         # for issue in $(gh issue list --repo "$repository" --json labels,number,createdAt --label "pager-duty" --jq '.[] | select((.labels[] | .name == "pager-duty") and (.createdAt | fromdateiso8601 < (now - 60))) | .number'); do
