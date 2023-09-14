@@ -24,7 +24,7 @@ jobs:
         username="Shubham9t9"
         
         # Fetch and assign issues
-        for issue in $(gh issue list --repo "$repository" --json labels,number,createdAt --label "pager-duty" --jq '.[] | select((.labels[] | .name == "pager-duty") and (.created_at | fromdateiso8601 < (now - 60))) | .number'); do
+        for issue in $(gh issue list --repo "$repository" --json labels,number,createdAt --label "pager-duty" --jq '.[] | select((.labels[] | .name == "pager-duty") and (.createdAt | fromdateiso8601 < (now - 60))) | .number'); do
             gh issue edit "$issue" --assignee "$username"
             echo "Assigned issue #$issue to $username"
         done
