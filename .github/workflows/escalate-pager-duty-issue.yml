@@ -26,7 +26,7 @@ jobs:
         status=$(echo "$issue_data" | jq -r '.state')
 
         # Check if the "pagerDuty" label is present and the status is not closed
-        if [[ "$labels" =~ "pagerDuty" ]] && [[ "$status" != "closed" ]]; then
+        if [[ "$labels" =~ "pager-duty" ]] && [[ "$status" != "closed" ]]; then
           echo "LABEL_PRESENT=true" >> $GITHUB_ENV
         else
           echo "LABEL_PRESENT=false" >> $GITHUB_ENV
