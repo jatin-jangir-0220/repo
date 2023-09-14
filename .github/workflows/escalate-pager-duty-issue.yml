@@ -23,7 +23,8 @@ jobs:
         repository="https://github.com/Shubham9t9/repo.git"
         username="Shubham9t9"
 
-        gh issue list --repo Shubham9t9/repo --json labels,number,created_at --label "pager-duty" --jq '.[] | select((.labels[] | .name == "pager-duty") and (.created_at | fromdateiso8601 < (now - 600))) | {Issue: .number, Created: .created_at}'
+        gh issue list --repo Shubham9t9/repo --json labels,number,createdAt --label "pager-duty" 
+        #--jq '.[] | select((.labels[] | .name == "pager-duty") and (.created_at | fromdateiso8601 < (now - 600))) | {Issue: .number, Created: .created_at}'
 
         
         # # Fetch and assign issues
