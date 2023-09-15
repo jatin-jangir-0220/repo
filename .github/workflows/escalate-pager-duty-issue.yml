@@ -57,7 +57,3 @@ jobs:
         else
           echo "Issue is not older than 2 minutes or it's already closed. No escalation needed."
         fi
-
-
-
-        3*24*3600
