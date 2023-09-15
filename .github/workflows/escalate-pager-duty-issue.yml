@@ -4,9 +4,9 @@ on:
   issues:
     types:
       - labeled
-      # - opened
-      # - synchronize
-      # - edited
+      - opened
+      - synchronize
+      - edited
   schedule:
     - cron: "*/5 * * * *"
 
