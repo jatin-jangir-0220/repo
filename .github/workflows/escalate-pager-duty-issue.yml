@@ -22,7 +22,6 @@ jobs:
       run: |
         repository="https://github.com/Shubham9t9/repo.git"
         username="Shubham9t9"
-
         issue_data=$(gh issue list --repo Shubham9t9/repo --json labels,number,createdAt)
         echo "$issue_data"
         # # Fetch and assign issues
