@@ -36,7 +36,7 @@ jobs:
           echo "LABEL_PRESENT=false" >> $GITHUB_ENV
         fi
 
-    - name: Check if Issue Was Opened More Than 2 Minutes Ago
+    - name: Check if Issue Was Opened More Than 2 Days Ago
       if: env.LABEL_PRESENT == 'true'
       run: |
         # Use GitHub API to get the issue's created timestamp
