@@ -7,8 +7,8 @@ on:
       - opened
       - synchronize
       - edited
-  # schedule:
-  #   - cron: "*/5 * * * *"
+  schedule:
+    - cron: "21 16 * * *"
 
 jobs:
   escalate:
