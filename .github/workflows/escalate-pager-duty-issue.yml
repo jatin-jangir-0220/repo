@@ -1,14 +1,14 @@
 name: Escalate GitHub Issue
 
 on:
-  issues:
-    types:
-      - labeled
-    #   - opened
-    #   - synchronize
-    #   - edited
+  # issues:
+  #   types:
+  #     - labeled
+  #   #   - opened
+  #   #   - synchronize
+  #   #   - edited
   schedule:
-    - cron: "27 16 * * *"
+    - cron: "29 16 * * *"
 
 jobs:
   escalate:
