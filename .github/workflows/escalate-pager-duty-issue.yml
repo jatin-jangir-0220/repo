@@ -1,14 +1,14 @@
-name: Escalate GitHub Issues
+name: Escalate GitHub Issue
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
   issues:
     types:
       - labeled
       - opened
+      - synchronize
       - edited
-      - syncronized
+  schedule:
+    - cron: "46 16 * * *"
 
 jobs:
   escalate:
@@ -16,46 +16,17 @@ jobs:
 
     steps:
     - name: Check Issue Label and Status
+      env:
+        GH_TOKEN: ${{ github.token }}
       id: check_label_status
       run: |
-        # Use the GitHub API to fetch issue labels and status (you'll need a GitHub token with appropriate permissions)
-        issue_data=$(curl -s -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }})
+        repository="https://github.com/Shubham9t9/repo.git"
+        username="Shubham9t9"
 
+        issue_data=$(gh issue list --repo Shubham9t9/repo --json labels,number,createdAt)
         echo "$issue_data"
-
-        # Extract label and status
-        labels=$(echo "$issue_data" | jq -r '.labels[].name')
-        status=$(echo "$issue_data" | jq -r '.state')
-
-        # Check if the "pagerDuty" label is present and the status is not closed
-        if [[ "$labels" =~ "pager-duty" ]] && [[ "$status" != "closed" ]]; then
-          echo "LABEL_PRESENT=true" >> $GITHUB_ENV
-        else
-          echo "LABEL_PRESENT=false" >> $GITHUB_ENV
-        fi
-
-    - name: Check if Issue Was Opened More Than 2 Minutes Ago
-      if: env.LABEL_PRESENT == 'true'
-      run: |
-        # Use GitHub API to get the issue's created timestamp
-        created_at=$(echo "$issue_data" | jq -r '.created_at')
-
-        # Calculate the current date and 2 minutes ago
-        current_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-        two_minutes_ago=$(date -u -d '2 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
-
-        # Check if the issue was created more than 2 minutes ago
-        if [[ "$created_at" < "$two_minutes_ago" ]]; then
-          # Use GitHub API to assign the issue to Shubham
-          username="Shubham9t9"
-
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"assignees\": [\"$username\"]}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/assignees"
-        else
-          echo "Issue is not older than 2 minutes or it's already closed. No escalation needed."
-        fi
+        # # Fetch and assign issues
+        # for issue in $(gh issue list --repo "$repository" --json labels,number,createdAt --label "pager-duty" --jq '.[] | select((.labels[] | .name == "pager-duty") and (.createdAt | fromdateiso8601 < (now - 60))) | .number'); do
+        #     gh issue edit "$issue" --add-assignee "$username"
+        #     echo "Assigned issue #$issue to $username"
+        # done
