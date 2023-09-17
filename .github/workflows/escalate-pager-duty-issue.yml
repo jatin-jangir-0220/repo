@@ -8,7 +8,7 @@ on:
       - synchronize
       - edited
   schedule:
-    - cron: "3 17 * * *"
+    - cron: "*/1 * * * *"
 
 jobs:
   escalate:
