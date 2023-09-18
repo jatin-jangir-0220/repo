@@ -43,7 +43,7 @@ jobs:
               -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
               -H "Accept: application/vnd.github.v3+json" \
               -d "{\"assignees\": [\"$username\"]}" \
-              "https://api.github.com/repos/Shubham9t9/repo/issues/$issue_number/assignees"
+              "https://api.github.com/repos/${{ github.repository }}/issues/$issue_number/assignees"
           fi
         done
         
