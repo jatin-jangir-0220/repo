@@ -29,7 +29,7 @@ jobs:
         echo "$issues" > pager-duty-issues.json
     - name: Iterate through issues and escalate
       run: |
-        TWO_MINUTES_AGO=$(date -u -d '2 minutes ago' --iso-8601=seconds)
+        TWO_MINUTES_AGO=$(date -u -d '2 days ago' --iso-8601=seconds)
         for issue in $(cat pager-duty-issues.json | jq -c '.[]'); do
           labels=$(echo "$issue" | jq -r '.labels[].name')
           state=$(echo "$issue" | jq -r '.state')
