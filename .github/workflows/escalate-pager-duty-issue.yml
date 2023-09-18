@@ -30,28 +30,13 @@ jobs:
     - name: Iterate through issues and escalate
       run: |
         TWO_MINUTES_AGO=$(date -u -d '48 hours ago' --iso-8601=seconds)
-        cat pager-duty-issues.json | jq -c '.[]' | while read -r issue; do
-          labels=$(echo "$issue" | jq -r '.labels[].name')
-          state=$(echo "$issue" | jq -r '.state')
-          created_at=$(echo "$issue" | jq -r '.created_at')
-        
-          # Check if state is not "closed" and created_at is older than TWO_DAYS_AGO
-          if [[ "$state" != "closed" ]] && [[ "$created_at" < "$TWO_DAYS_AGO" ]]; then
-            issue_number=$(echo "$issue" | jq -r '.number')
-            username="Shubham9t9"
-            curl -X POST \
-              -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d "{\"assignees\": [\"$username\"]}" \
-              "https://api.github.com/repos/${{ github.repository }}/issues/$issue_number/assignees"
-          fi
-        done
-        
-        # for issue in $(cat pager-duty-issues.json | jq -c '.[]'); do
+        # cat pager-duty-issues.json | jq -c '.[]' | while read -r issue; do
         #   labels=$(echo "$issue" | jq -r '.labels[].name')
         #   state=$(echo "$issue" | jq -r '.state')
         #   created_at=$(echo "$issue" | jq -r '.created_at')
-        #   if [[ "$state" != "closed" ]] && [[ "$created_at" < "$TWO_MINUTES_AGO" ]]; then
+        
+        #   # Check if state is not "closed" and created_at is older than TWO_DAYS_AGO
+        #   if [[ "$state" != "closed" ]] && [[ "$created_at" < "$TWO_DAYS_AGO" ]]; then
         #     issue_number=$(echo "$issue" | jq -r '.number')
         #     username="Shubham9t9"
         #     curl -X POST \
@@ -61,3 +46,18 @@ jobs:
         #       "https://api.github.com/repos/${{ github.repository }}/issues/$issue_number/assignees"
         #   fi
         # done
+        
+        cat pager-duty-issues.json | jq -c '.[]' | while read -r issue; do
+          labels=$(echo "$issue" | jq -r '.labels[].name')
+          state=$(echo "$issue" | jq -r '.state')
+          created_at=$(echo "$issue" | jq -r '.created_at')
+          if [[ "$state" != "closed" ]] && [[ "$created_at" < "$TWO_MINUTES_AGO" ]]; then
+            issue_number=$(echo "$issue" | jq -r '.number')
+            username="Shubham9t9"
+            curl -X POST \
+              -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d "{\"assignees\": [\"$username\"]}" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/$issue_number/assignees"
+          fi
+        done
