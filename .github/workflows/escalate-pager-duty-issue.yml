@@ -27,6 +27,7 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           "https://api.github.com/repos/${{ github.repository }}/issues?state=open&labels=pager-duty")
         echo "$issues" > pager-duty-issues.json
+        cat pager-duty-issues.json
     - name: Iterate through issues and escalate
       run: |
         TWO_DAYS_AGO=$(date -u -d '48 hours ago' --iso-8601=seconds)
