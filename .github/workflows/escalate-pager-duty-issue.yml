@@ -32,8 +32,7 @@ jobs:
       run: |
         TWO_DAYS_AGO=$(date -u -d '48 hours ago' --iso-8601=seconds)
         echo $TWO_DAYS_AGO
-        labels=$(echo "$issue" | jq -r '.labels[].name')
-        echo $labels
+        cat pager-duty-issues.json | jq -c '.[]'
         for issue in $(cat pager-duty-issues.json | jq -c '.[]'); do
           labels=$(echo "$issue" | jq -r '.labels[].name')
           state=$(echo "$issue" | jq -r '.state')
