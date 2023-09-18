@@ -30,14 +30,14 @@ jobs:
 
     - name: Iterate through issues and escalate
       run: |
-        TWO_DAYS_AGO=$(date -u -d '2 days ago' --iso-8601=seconds)
+        two_minutes_ago=$(date -u -d '2 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
 
         for issue in $(cat pager-duty-issues.json | jq -c '.[]'); do
           labels=$(echo "$issue" | jq -r '.labels[].name')
           state=$(echo "$issue" | jq -r '.state')
           created_at=$(echo "$issue" | jq -r '.created_at')
 
-          if [[ "$state" != "closed" ]] && [[ "$created_at" < "$TWO_DAYS_AGO" ]]; then
+          if [[ "$state" != "closed" ]] && [[ "$created_at" < "$two_minutes_ago" ]]; then
             issue_number=$(echo "$issue" | jq -r '.number')
             username="Shubham9t9"
 
