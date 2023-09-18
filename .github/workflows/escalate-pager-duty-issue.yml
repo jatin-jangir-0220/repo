@@ -3,6 +3,13 @@ name: Escalate GitHub Issues
 on:
   schedule:
     - cron: "*/5 * * * *"
+  issues:
+    types:
+      - labeled
+      - opened
+      - edited
+      - syncronized
+
 
 jobs:
   escalate:
